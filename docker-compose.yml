@@ -1,0 +1,29 @@
+services:
+  oblivion-textlm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  oblivion-console:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    environment:
+      OBLIVION_UI_API_BASE_URL: http://oblivion-textlm:8080
+      OBLIVION_UI_API_KEY: ${OBLIVION_UI_API_KEY:-change-me}
+      OBLIVION_UI_PUBLIC_MODE: "true"
+    ports:
+      - "8501:8501"
+    depends_on:
+      oblivion-textlm:
+        condition: service_healthy
+    restart: unless-stopped

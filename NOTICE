@@ -1,0 +1,19 @@
+OBLIVION TextLM v2.0.0
+Copyright (c) 2026 Mohammad Amir Khusru Akhtar. All rights reserved.
+
+OBLIVION TextLM is proprietary software. It is designed to operate with separately
+licensed pretrained language-model executors and optional separately licensed
+embedding, inference, storage and search components.
+
+No Mistral or other third-party model weights are included in this repository.
+Third-party materials remain subject to their respective licenses.
+
+Research foundation:
+Akhtar, M. A. K. (2026). OBLIVION: Query-Relative Neural Computation by
+Verified Semantic Obligation Retirement (Version V1). Zenodo.
+https://doi.org/10.5281/zenodo.22172608
+
+Related foundations:
+TSI  https://doi.org/10.5281/zenodo.22160359
+SLW  https://doi.org/10.5281/zenodo.22162568
+SHC  https://doi.org/10.5281/zenodo.22164419

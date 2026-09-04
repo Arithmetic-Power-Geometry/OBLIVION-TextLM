@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use the OBLIVION architecture academically, cite the OBLIVION paper."
+title: "OBLIVION TextLM"
+type: software
+version: "2.0.0"
+authors:
+  - family-names: "Akhtar"
+    given-names: "Mohammad Amir Khusru"
+year: 2026
+license: "Proprietary"
+repository-code: "https://github.com/Arithmetic-Power-Geometry/OBLIVION-TextLM"
+preferred-citation:
+  type: article
+  title: "OBLIVION: Query-Relative Neural Computation by Verified Semantic Obligation Retirement"
+  authors:
+    - family-names: "Akhtar"
+      given-names: "Mohammad Amir Khusru"
+  year: 2026
+  doi: "10.5281/zenodo.22172608"
+references:
+  - type: article
+    title: "Beyond Complete Compilation: Task-Semantic Images and the Complexity of Computing Only What a Query Can See"
+    doi: "10.5281/zenodo.22160359"
+  - type: article
+    title: "When Can a Computation Forget? Semantic Lifetime Width and Query-Relative State Retirement"
+    doi: "10.5281/zenodo.22162568"
+  - type: article
+    title: "Semantic Hardness Conservation: An Operational Normal Form for Exact Reasoning After Compression"
+    doi: "10.5281/zenodo.22164419"

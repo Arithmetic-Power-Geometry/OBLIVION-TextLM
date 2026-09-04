@@ -12,9 +12,9 @@ DOIS = [
 def test_release_version_is_synchronized():
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     assert f'version = "{version}"' in (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    assert f'__version__ = "{version}"' in (
-        ROOT / "src/oblivion_textlm/__init__.py"
-    ).read_text(encoding="utf-8")
+    assert f'__version__ = "{version}"' in (ROOT / "src/oblivion_textlm/__init__.py").read_text(
+        encoding="utf-8"
+    )
 
 
 def test_primary_citations_are_present_in_release_metadata():

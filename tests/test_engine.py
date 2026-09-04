@@ -11,8 +11,7 @@ from oblivion_textlm.router import LexicalObligationRouter
 @pytest.mark.asyncio
 async def test_full_demo_retires_verified_obligation():
     context = (
-        "Rahul borrowed Maya's bicycle. Maya's bicycle was painted red. "
-        "Other facts are irrelevant."
+        "Rahul borrowed Maya's bicycle. Maya's bicycle was painted red. Other facts are irrelevant."
     )
     query = "What colour is Rahul's bicycle?"
     engine = OblivionTextLM(

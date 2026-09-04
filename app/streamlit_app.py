@@ -104,9 +104,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub">'
-    "Query-relative TextLM · baseline / RAG / OBLIVION comparison console"
-    "</div>",
+    '<div class="sub">Query-relative TextLM · baseline / RAG / OBLIVION comparison console</div>',
     unsafe_allow_html=True,
 )
 st.markdown(
@@ -131,9 +129,7 @@ with st.sidebar:
     show_trace = st.toggle("Show OBLIVION trace", True)
     show_raw = st.toggle("Show raw result", False)
     st.caption(f"v{__version__}")
-    st.caption(
-        "© 2026 Mohammad Amir Khusru Akhtar. All rights reserved."
-    )
+    st.caption("© 2026 Mohammad Amir Khusru Akhtar. All rights reserved.")
 
 left, right = st.columns(
     [1.2, 0.8],
@@ -171,9 +167,7 @@ with left:
         )
 
         if not context or not question.strip():
-            st.error(
-                "Provide context/document and a question."
-            )
+            st.error("Provide context/document and a question.")
         else:
             chunks = chunk_text(context)
             executor, router, oblivion = demo_components()
@@ -215,15 +209,9 @@ with left:
             st.markdown("#### Sources")
 
             for citation in result["citations"][:8]:
-                page = (
-                    f" · page {citation['page']}"
-                    if citation.get("page")
-                    else ""
-                )
+                page = f" · page {citation['page']}" if citation.get("page") else ""
                 st.caption(
-                    f"[{citation['chunk_id']}] "
-                    f"{citation['source']}{page}: "
-                    f"{citation['quote']}"
+                    f"[{citation['chunk_id']}] {citation['source']}{page}: {citation['quote']}"
                 )
 
 with right:
@@ -251,20 +239,14 @@ with right:
         )
 
         if show_trace and result.get("trace"):
-            st.markdown(
-                "#### Birth · verify · discharge"
-            )
+            st.markdown("#### Birth · verify · discharge")
 
             for step in result["trace"]:
-                with st.expander(
-                    f"Step {step['step'] + 1}"
-                ):
+                with st.expander(f"Step {step['step'] + 1}"):
                     st.json(step)
 
         if result.get("timings"):
-            st.markdown(
-                "#### Stage timing"
-            )
+            st.markdown("#### Stage timing")
             st.dataframe(
                 result["timings"],
                 use_container_width=True,
@@ -280,7 +262,4 @@ with right:
                 language="json",
             )
     else:
-        st.info(
-            "Run a query to inspect answer, citations, timing, "
-            "and OBLIVION state."
-        )
+        st.info("Run a query to inspect answer, citations, timing, and OBLIVION state.")

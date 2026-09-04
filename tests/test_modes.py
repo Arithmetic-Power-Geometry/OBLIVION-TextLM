@@ -13,9 +13,7 @@ from oblivion_textlm.router import HybridObligationRouter
 @pytest.mark.asyncio
 async def test_three_modes_work():
     query = "What colour is Rahul's bicycle?"
-    chunks = chunk_text(
-        "Rahul borrowed Maya's bicycle. Maya's bicycle was painted red."
-    )
+    chunks = chunk_text("Rahul borrowed Maya's bicycle. Maya's bicycle was painted red.")
     executor = DeterministicDemoExecutor()
     router = HybridObligationRouter(3, 64)
 

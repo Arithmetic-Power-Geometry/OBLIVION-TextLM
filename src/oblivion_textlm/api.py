@@ -94,9 +94,7 @@ async def chat(req: ChatRequest, _: str = Depends(authenticate)):
     started = time.perf_counter()
     user_messages = [message.content for message in req.messages if message.role == "user"]
     query = user_messages[-1] if user_messages else ""
-    context = "\n".join(
-        f"{message.role.upper()}: {message.content}" for message in req.messages
-    )
+    context = "\n".join(f"{message.role.upper()}: {message.content}" for message in req.messages)
     result = await _infer(query, context, req.mode, req.session_id)
     elapsed = time.perf_counter() - started
     LAT.labels("chat").observe(elapsed)

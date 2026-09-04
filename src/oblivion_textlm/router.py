@@ -12,17 +12,37 @@ from .types import Obligation, TextChunk
 
 _WORD = re.compile(r"[A-Za-z0-9_'-]+")
 _STOP = {
-    "the", "a", "an", "and", "or", "of", "to", "in", "is", "are", "was",
-    "were", "be", "for", "with", "on", "at", "by", "what", "which", "who",
-    "when", "where", "why", "how",
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "of",
+    "to",
+    "in",
+    "is",
+    "are",
+    "was",
+    "were",
+    "be",
+    "for",
+    "with",
+    "on",
+    "at",
+    "by",
+    "what",
+    "which",
+    "who",
+    "when",
+    "where",
+    "why",
+    "how",
 }
 
 
 def _terms(text: str) -> Counter[str]:
     return Counter(
-        word.lower()
-        for word in _WORD.findall(text)
-        if word.lower() not in _STOP and len(word) > 1
+        word.lower() for word in _WORD.findall(text) if word.lower() not in _STOP and len(word) > 1
     )
 
 

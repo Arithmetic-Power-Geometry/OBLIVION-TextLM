@@ -154,8 +154,7 @@ class OblivionTextLM:
                         elif gain > 0:
                             decision = Decision.RETIRE
                             reason = (
-                                "verified, counterfactually tolerated, "
-                                "and positive audited gain"
+                                "verified, counterfactually tolerated, and positive audited gain"
                             )
                     elif gain > 0:
                         decision = Decision.RETIRE
@@ -178,9 +177,7 @@ class OblivionTextLM:
                 )
 
             obligations = [
-                obligation
-                for obligation in candidates
-                if obligation.id not in discharge_ids
+                obligation for obligation in candidates if obligation.id not in discharge_ids
             ]
 
             stage_audit = self.cost_model.stage(
@@ -207,8 +204,7 @@ class OblivionTextLM:
                         obligations_after=[asdict(obligation) for obligation in obligations],
                         audit=asdict(stage_audit),
                         timings=[
-                            asdict(timing)
-                            for timing in recorder.timings[step_timings_start:]
+                            asdict(timing) for timing in recorder.timings[step_timings_start:]
                         ],
                     )
                 )

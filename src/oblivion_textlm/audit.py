@@ -83,11 +83,7 @@ def add_audit(total: CostAudit, stage: CostAudit) -> None:
             getattr(total, key) + getattr(stage, key),
         )
 
-    total.ttft_ms = (
-        stage.ttft_ms
-        if stage.ttft_ms is not None
-        else total.ttft_ms
-    )
+    total.ttft_ms = stage.ttft_ms if stage.ttft_ms is not None else total.ttft_ms
 
     if stage.peak_memory_mb is not None:
         total.peak_memory_mb = max(

@@ -23,7 +23,9 @@ class TokenCounter:
     """
 
     def count_text(self, text: str) -> TokenCount:
-        return TokenCount(tokens=len(_TOKEN.findall(text)), exact=False, source="portable-estimator")
+        return TokenCount(
+            tokens=len(_TOKEN.findall(text)), exact=False, source="portable-estimator"
+        )
 
     def count_messages(self, messages: list[dict]) -> TokenCount:
         total = sum(self.count_text(str(message.get("content", ""))).tokens for message in messages)

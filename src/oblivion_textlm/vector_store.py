@@ -26,10 +26,7 @@ class PersistentVectorStore:
 
     def search(self, query: str, top_k: int = 8) -> list[tuple[float, TextChunk]]:
         q = self.embedder.embed(query)
-        scored = [
-            (cosine_similarity(q, vector), chunk)
-            for chunk, vector in self._items.values()
-        ]
+        scored = [(cosine_similarity(q, vector), chunk) for chunk, vector in self._items.values()]
         scored.sort(key=lambda item: (-item[0], item[1].id))
         return scored[: max(0, top_k)]
 

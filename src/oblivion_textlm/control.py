@@ -188,9 +188,7 @@ EVIDENCE:
 """
         )
         valid = {chunk.id for chunk in chunks}
-        evidence_ids = [
-            item for item in payload.get("evidence_ids", []) if item in valid
-        ]
+        evidence_ids = [item for item in payload.get("evidence_ids", []) if item in valid]
         return Certificate(
             obligation_id=obligation.id,
             claim=str(payload.get("claim", "uncertain")),
@@ -216,9 +214,7 @@ EVIDENCE:
 
         evidence_set = set(certificate.evidence_ids)
         evidence = "\n".join(
-            f"[{chunk.id}] {chunk.text[:700]}"
-            for chunk in chunks
-            if chunk.id in evidence_set
+            f"[{chunk.id}] {chunk.text[:700]}" for chunk in chunks if chunk.id in evidence_set
         )
         payload = await self._json(
             f"""

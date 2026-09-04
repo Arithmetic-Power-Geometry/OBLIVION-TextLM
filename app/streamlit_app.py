@@ -135,7 +135,9 @@ def production_components():
         counterfactual_enabled=get_secret(
             "OBLIVION_COUNTERFACTUAL_ENABLED",
             "false",
-        ).strip().lower()
+        )
+        .strip()
+        .lower()
         in {"1", "true", "yes", "on"},
         counterfactual_tolerance=float(
             get_secret(
@@ -358,9 +360,7 @@ with right:
             f"{audit.get('total_ms', 0):.1f}",
         )
 
-        st.caption(
-            "Runtime: " + st.session_state.get("runtime_label", "Unknown")
-        )
+        st.caption("Runtime: " + st.session_state.get("runtime_label", "Unknown"))
 
         if show_trace and result.get("trace"):
             st.markdown("#### Birth · verify · discharge")
@@ -386,6 +386,4 @@ with right:
                 language="json",
             )
     else:
-        st.info(
-            "Run a query to inspect answer, citations, timing, and OBLIVION state."
-        )
+        st.info("Run a query to inspect answer, citations, timing, and OBLIVION state.")

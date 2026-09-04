@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[dev,ui]"
+      - run: ruff check src tests scripts app
+      - run: ruff format --check src tests scripts app
+      - run: python -m compileall -q src app scripts tests
+      - run: python scripts/release_check.py
+      - run: pytest
+      - run: oblivion-textlm demo --mode baseline > /tmp/baseline.json
+      - run: oblivion-textlm demo --mode rag > /tmp/rag.json
+      - run: oblivion-textlm demo --mode oblivion > /tmp/oblivion.json
+      - run: streamlit version
+      - name: Streamlit startup smoke test
+        run: |
+          streamlit run app/streamlit_app.py \
+            --server.headless true \
+            --server.address 127.0.0.1 \
+            --server.port 8501 > /tmp/streamlit.log 2>&1 &
+          APP_PID=$!
+          trap 'kill $APP_PID || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8501/_stcore/health >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/streamlit.log
+          exit 1

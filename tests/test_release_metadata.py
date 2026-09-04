@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DOIS = [
     "10.5281/zenodo.22172608",

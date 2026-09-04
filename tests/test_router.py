@@ -1,7 +1,6 @@
 from oblivion_textlm.router import LexicalObligationRouter
 from oblivion_textlm.types import Obligation, TextChunk
 
-
 def test_router_prefers_matching_chunk():
     chunks = [
         TextChunk("a", "Maya owns a red bicycle."),

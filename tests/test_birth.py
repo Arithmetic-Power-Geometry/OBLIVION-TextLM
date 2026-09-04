@@ -8,7 +8,6 @@ from oblivion_textlm.router import LexicalObligationRouter
 from oblivion_textlm.types import Certificate, Obligation, Verdict
 from oblivion_textlm.util import stable_id
 
-
 class BirthControl:
     async def construct(self, query, chunks):
         text = "identify Rahul bicycle source"
@@ -35,7 +34,6 @@ class BirthControl:
         if certificate.claim == "completed":
             return Verdict.VERIFIED
         return Verdict.UNCERTAIN
-
 
 @pytest.mark.asyncio
 async def test_birth_is_added_while_old_obligation_is_discharged():

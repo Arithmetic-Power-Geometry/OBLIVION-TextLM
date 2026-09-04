@@ -9,8 +9,6 @@ from oblivion_textlm.executor import DeterministicDemoExecutor
 from oblivion_textlm.rag import RAGTextLM
 from oblivion_textlm.router import HybridObligationRouter
 
-
-
 @pytest.mark.asyncio
 async def test_three_modes_work():
     query = "What colour is Rahul's bicycle?"

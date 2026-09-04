@@ -2,8 +2,6 @@ from oblivion_textlm.embeddings import HashingEmbedder
 from oblivion_textlm.types import TextChunk
 from oblivion_textlm.vector_store import PersistentVectorStore
 
-
-
 def test_vector_store_returns_chunk():
     store = PersistentVectorStore(HashingEmbedder(64))
     store.upsert(

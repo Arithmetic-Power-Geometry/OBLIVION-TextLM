@@ -20,9 +20,11 @@ from oblivion_textlm import __version__  # noqa: E402
 from oblivion_textlm.audit import CostModel  # noqa: E402
 from oblivion_textlm.baseline import BaselineTextLM  # noqa: E402
 from oblivion_textlm.chunking import chunk_text  # noqa: E402
+from oblivion_textlm.config import Settings  # noqa: E402
 from oblivion_textlm.control import DeterministicDemoControl  # noqa: E402
 from oblivion_textlm.engine import OblivionTextLM  # noqa: E402
 from oblivion_textlm.executor import DeterministicDemoExecutor  # noqa: E402
+from oblivion_textlm.factory import build_engine  # noqa: E402
 from oblivion_textlm.rag import RAGTextLM  # noqa: E402
 from oblivion_textlm.router import HybridObligationRouter  # noqa: E402
 
@@ -69,6 +71,98 @@ st.markdown(
 )
 
 
+def get_secret(name: str, default: str = "") -> str:
+    try:
+        value = st.secrets.get(name, default)
+    except Exception:
+        value = default
+    return str(value)
+
+
+def production_configured() -> bool:
+    base_url = get_secret("OBLIVION_EXECUTOR_BASE_URL").strip()
+    api_key = get_secret("OBLIVION_EXECUTOR_API_KEY").strip()
+    return bool(base_url and api_key)
+
+
+def production_components():
+    settings = Settings(
+        model_name=get_secret(
+            "OBLIVION_MODEL_NAME",
+            "mistralai/Mistral-Small-4-119B-2603",
+        ),
+        executor_base_url=get_secret("OBLIVION_EXECUTOR_BASE_URL").strip(),
+        executor_api_key=get_secret("OBLIVION_EXECUTOR_API_KEY").strip(),
+        controller_base_url=get_secret(
+            "OBLIVION_CONTROLLER_BASE_URL",
+            "",
+        ).strip(),
+        controller_api_key=get_secret(
+            "OBLIVION_CONTROLLER_API_KEY",
+            "",
+        ).strip(),
+        controller_model=get_secret(
+            "OBLIVION_CONTROLLER_MODEL",
+            "",
+        ).strip(),
+        verifier_base_url=get_secret(
+            "OBLIVION_VERIFIER_BASE_URL",
+            "",
+        ).strip(),
+        verifier_api_key=get_secret(
+            "OBLIVION_VERIFIER_API_KEY",
+            "",
+        ).strip(),
+        verifier_model=get_secret(
+            "OBLIVION_VERIFIER_MODEL",
+            "",
+        ).strip(),
+        router_mode=get_secret("OBLIVION_ROUTER_MODE", "hybrid").strip() or "hybrid",
+        router_top_k=int(get_secret("OBLIVION_ROUTER_TOP_K", "6")),
+        embedding_dimensions=int(
+            get_secret(
+                "OBLIVION_EMBEDDING_DIMENSIONS",
+                "384",
+            )
+        ),
+        max_steps=int(get_secret("OBLIVION_MAX_STEPS", "6")),
+        verify_threshold=float(
+            get_secret(
+                "OBLIVION_VERIFY_THRESHOLD",
+                "0.90",
+            )
+        ),
+        counterfactual_enabled=get_secret(
+            "OBLIVION_COUNTERFACTUAL_ENABLED",
+            "false",
+        ).strip().lower()
+        in {"1", "true", "yes", "on"},
+        counterfactual_tolerance=float(
+            get_secret(
+                "OBLIVION_COUNTERFACTUAL_TOLERANCE",
+                "0.08",
+            )
+        ),
+        memory_enabled=False,
+    )
+
+    oblivion = build_engine(settings)
+    return oblivion.executor, oblivion.router, oblivion
+
+
+def demo_components():
+    executor = DeterministicDemoExecutor()
+    router = HybridObligationRouter(6)
+    oblivion = OblivionTextLM(
+        executor,
+        DeterministicDemoControl(),
+        router,
+        CostModel(controller_weight=0.0),
+        max_steps=2,
+    )
+    return executor, router, oblivion
+
+
 def extract_text(uploaded) -> str:
     if uploaded is None:
         return ""
@@ -94,19 +188,6 @@ def extract_text(uploaded) -> str:
     raise ValueError("Unsupported file type")
 
 
-def demo_components():
-    executor = DeterministicDemoExecutor()
-    router = HybridObligationRouter(6)
-    oblivion = OblivionTextLM(
-        executor,
-        DeterministicDemoControl(),
-        router,
-        CostModel(controller_weight=0.0),
-        max_steps=2,
-    )
-    return executor, router, oblivion
-
-
 st.markdown(
     '<div class="obl">OBLIVION TextLM</div>',
     unsafe_allow_html=True,
@@ -123,17 +204,33 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+is_production = production_configured()
+
 with st.sidebar:
     st.markdown("### Runtime")
     mode = st.selectbox(
         "Mode",
         ["OBLIVION", "RAG", "BASELINE"],
     )
-    st.warning(
-        "This public no-key console uses the deterministic smoke-test executor. "
-        "For real model comparison, connect the repository to a separately licensed "
-        "OpenAI-compatible pretrained LLM endpoint such as Mistral Small 4."
-    )
+
+    if is_production:
+        st.success(
+            "Production LLM executor is configured. "
+            "All three modes use the same pretrained model endpoint."
+        )
+        st.caption(
+            "Model: "
+            + get_secret(
+                "OBLIVION_MODEL_NAME",
+                "mistralai/Mistral-Small-4-119B-2603",
+            )
+        )
+    else:
+        st.warning(
+            "Deterministic demo mode is active because no production executor is configured. "
+            "This is a smoke-test path, not a general-purpose LLM."
+        )
+
     show_trace = st.toggle("Show OBLIVION trace", True)
     show_raw = st.toggle("Show raw result", False)
     st.caption(f"v{__version__}")
@@ -178,34 +275,49 @@ with left:
             st.error("Provide context/document and a question.")
         else:
             chunks = chunk_text(context)
-            executor, router, oblivion = demo_components()
 
-            if mode == "BASELINE":
-                result = asyncio.run(
-                    BaselineTextLM(executor).infer(
-                        question,
-                        chunks,
-                    )
-                )
-            elif mode == "RAG":
-                result = asyncio.run(
-                    RAGTextLM(
-                        executor,
-                        router,
-                    ).infer(
-                        question,
-                        chunks,
-                    )
-                )
-            else:
-                result = asyncio.run(
-                    oblivion.infer(
-                        question,
-                        chunks,
-                    )
+            try:
+                if is_production:
+                    executor, router, oblivion = production_components()
+                else:
+                    executor, router, oblivion = demo_components()
+
+                with st.spinner("Running TextLM inference..."):
+                    if mode == "BASELINE":
+                        result = asyncio.run(
+                            BaselineTextLM(executor).infer(
+                                question,
+                                chunks,
+                            )
+                        )
+                    elif mode == "RAG":
+                        result = asyncio.run(
+                            RAGTextLM(
+                                executor,
+                                router,
+                            ).infer(
+                                question,
+                                chunks,
+                            )
+                        )
+                    else:
+                        result = asyncio.run(
+                            oblivion.infer(
+                                question,
+                                chunks,
+                            )
+                        )
+
+                st.session_state["result"] = asdict(result)
+                st.session_state["runtime_label"] = (
+                    "Production LLM" if is_production else "Deterministic demo"
                 )
 
-            st.session_state["result"] = asdict(result)
+            except Exception as exc:
+                st.error(
+                    "Inference failed. Check the configured executor endpoint, API key, "
+                    f"and model name. Details: {exc}"
+                )
 
     result = st.session_state.get("result")
 
@@ -246,6 +358,10 @@ with right:
             f"{audit.get('total_ms', 0):.1f}",
         )
 
+        st.caption(
+            "Runtime: " + st.session_state.get("runtime_label", "Unknown")
+        )
+
         if show_trace and result.get("trace"):
             st.markdown("#### Birth · verify · discharge")
 
@@ -270,4 +386,6 @@ with right:
                 language="json",
             )
     else:
-        st.info("Run a query to inspect answer, citations, timing, and OBLIVION state.")
+        st.info(
+            "Run a query to inspect answer, citations, timing, and OBLIVION state."
+        )

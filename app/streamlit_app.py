@@ -3,20 +3,28 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sys
 from dataclasses import asdict
 from io import BytesIO
+from pathlib import Path
 
 import streamlit as st
 
-from oblivion_textlm import __version__
-from oblivion_textlm.audit import CostModel
-from oblivion_textlm.baseline import BaselineTextLM
-from oblivion_textlm.chunking import chunk_text
-from oblivion_textlm.control import DeterministicDemoControl
-from oblivion_textlm.engine import OblivionTextLM
-from oblivion_textlm.executor import DeterministicDemoExecutor
-from oblivion_textlm.rag import RAGTextLM
-from oblivion_textlm.router import HybridObligationRouter
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = REPO_ROOT / "src"
+
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from oblivion_textlm import __version__  # noqa: E402
+from oblivion_textlm.audit import CostModel  # noqa: E402
+from oblivion_textlm.baseline import BaselineTextLM  # noqa: E402
+from oblivion_textlm.chunking import chunk_text  # noqa: E402
+from oblivion_textlm.control import DeterministicDemoControl  # noqa: E402
+from oblivion_textlm.engine import OblivionTextLM  # noqa: E402
+from oblivion_textlm.executor import DeterministicDemoExecutor  # noqa: E402
+from oblivion_textlm.rag import RAGTextLM  # noqa: E402
+from oblivion_textlm.router import HybridObligationRouter  # noqa: E402
 
 st.set_page_config(
     page_title="OBLIVION TextLM",

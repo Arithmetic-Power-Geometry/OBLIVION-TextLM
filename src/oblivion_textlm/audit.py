@@ -1,15 +1,17 @@
 # Copyright (c) 2026 Mohammad Amir Khusru Akhtar. All rights reserved.
 from __future__ import annotations
 
-from dataclasses import asdict
-
 from .types import CostAudit
 
 
 class CostModel:
     """SHC-aware operational accounting in configured normalized units."""
 
-    def __init__(self, controller_weight: float = 1.0, active_token_weight: float = 1.0):
+    def __init__(
+        self,
+        controller_weight: float = 1.0,
+        active_token_weight: float = 1.0,
+    ):
         self.controller_weight = controller_weight
         self.active_token_weight = active_token_weight
 
@@ -73,10 +75,25 @@ def add_audit(total: CostAudit, stage: CostAudit) -> None:
         "active_chars",
         "total_ms",
     ]
+
     for key in numeric:
-        setattr(total, key, getattr(total, key) + getattr(stage, key))
-    total.ttft_ms = stage.ttft_ms if stage.ttft_ms is not None else total.ttft_ms
+        setattr(
+            total,
+            key,
+            getattr(total, key) + getattr(stage, key),
+        )
+
+    total.ttft_ms = (
+        stage.ttft_ms
+        if stage.ttft_ms is not None
+        else total.ttft_ms
+    )
+
     if stage.peak_memory_mb is not None:
-        total.peak_memory_mb = max(total.peak_memory_mb or 0.0, stage.peak_memory_mb)
+        total.peak_memory_mb = max(
+            total.peak_memory_mb or 0.0,
+            stage.peak_memory_mb,
+        )
+
     if stage.kv_cache_bytes is not None:
         total.kv_cache_bytes = stage.kv_cache_bytes

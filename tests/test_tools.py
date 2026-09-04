@@ -1,6 +1,7 @@
 from oblivion_textlm.tools.calculator import CalculatorTool
 from oblivion_textlm.tools.registry import ToolRegistry
 
+
 def test_tool_registry_and_calculator():
     registry = ToolRegistry()
     registry.register(CalculatorTool())

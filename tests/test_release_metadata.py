@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 ROOT = Path(__file__).resolve().parents[1]
 DOIS = [
     "10.5281/zenodo.22172608",
@@ -8,6 +9,7 @@ DOIS = [
     "10.5281/zenodo.22164419",
 ]
 
+
 def test_release_version_is_synchronized():
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     assert f'version = "{version}"' in (ROOT / "pyproject.toml").read_text(encoding="utf-8")
@@ -15,11 +17,13 @@ def test_release_version_is_synchronized():
         ROOT / "src/oblivion_textlm/__init__.py"
     ).read_text(encoding="utf-8")
 
+
 def test_primary_citations_are_present_in_release_metadata():
     for rel in ["README.md", "NOTICE", "CITATION.cff", "docs/REFERENCES.md"]:
         text = (ROOT / rel).read_text(encoding="utf-8")
         for doi in DOIS:
             assert doi in text, (rel, doi)
+
 
 def test_streamlit_release_surface_exists():
     for rel in [

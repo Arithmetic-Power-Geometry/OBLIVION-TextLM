@@ -1,8 +1,10 @@
 from oblivion_textlm.embeddings import HashingEmbedder, cosine_similarity
 
+
 def test_hash_embedding_is_deterministic():
     embedder = HashingEmbedder(64)
     assert embedder.embed("semantic obligation") == embedder.embed("semantic obligation")
+
 
 def test_cosine_identity_positive():
     embedder = HashingEmbedder(64)

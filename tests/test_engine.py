@@ -7,6 +7,7 @@ from oblivion_textlm.engine import OblivionTextLM
 from oblivion_textlm.executor import DeterministicDemoExecutor
 from oblivion_textlm.router import LexicalObligationRouter
 
+
 @pytest.mark.asyncio
 async def test_full_demo_retires_verified_obligation():
     context = (
@@ -25,6 +26,7 @@ async def test_full_demo_retires_verified_obligation():
     assert "red" in result.answer.lower()
     assert result.obligations == []
     assert result.trace[0].retirements[0]["decision"] == "RETIRE"
+
 
 @pytest.mark.asyncio
 async def test_uncertain_keeps_obligation():

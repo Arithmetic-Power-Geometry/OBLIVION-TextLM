@@ -1,5 +1,6 @@
 from oblivion_textlm.memory import ConversationMemory
 
+
 def test_memory_round_trip(tmp_path):
     memory = ConversationMemory(tmp_path / "memory.db")
     memory.append("s", "user", "hello")
